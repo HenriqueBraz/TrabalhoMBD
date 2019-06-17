@@ -1,0 +1,113 @@
+-- Geração de Modelo físico
+-- Sql ANSI 2003 - brModelo.
+
+
+
+CREATE TABLE conferencia (
+id_conferencia numeric(4) PRIMARY KEY,
+nome varchar(50)
+)
+
+CREATE TABLE estatisticas (
+id_jogador varchar(50),
+id_partida numeric(4),
+assistencias numeric(3),
+faltas numeric(3),
+cestas numeric(3),
+PRIMARY KEY(id_jogador,id_partida)
+)
+
+CREATE TABLE funcionarios (
+id_funcionario varchar(50) PRIMARY KEY,
+id_franquia numeric(4),
+nome varchar(50),
+telefone1 numeric(10),
+telefone2 numeric(10)
+)
+
+CREATE TABLE divisoes (
+id_divisao numeric(4),
+id_conferencia numeric(4),
+regiao varchar(50),
+PRIMARY KEY(id_divisao,id_conferencia)
+)
+
+CREATE TABLE estadios (
+id_estadio numeric(4) PRIMARY KEY,
+nome varchar(50),
+capacidade numeric(6)
+)
+
+CREATE TABLE enderecos (
+id_endereco numeric(4),
+id_estadio numeric(4),
+estado varchar(2),
+rua varchar(50),
+complemento varchar(10),
+cidade varchar(50),
+PRIMARY KEY(id_endereco,id_estadio)
+)
+
+CREATE TABLE jogadores (
+id_jogador varchar(50), 
+idade numeric(2),
+peso numeric(3),
+altura numeric(3),
+posicao varchar(2),
+PRIMARY KEY(id_jogador)
+)
+
+CREATE TABLE tecnicos (
+id_tecnico varchar(50) PRIMARY KEY
+)
+
+CREATE TABLE franquias (
+id_franquia numeric(4) PRIMARY KEY,
+id_divisao numeric(4),
+id_conferencia numeric(4),
+nome varchar(50),
+apelido varchar(50),
+cidade varchar(50),
+conquistas numeric(3)
+)
+
+CREATE TABLE partidas (
+id_partida numeric(4) PRIMARY KEY,
+id_estadio numeric(4),
+id_local numeric(4),
+id_visitante numeric(4),
+horario varchar(10),
+placar varchar(5)
+)
+
+CREATE TABLE auxilia (
+id_arbitro numeric(4),
+PRIMARY KEY(id_arbitro)
+)
+
+CREATE TABLE arbitros (
+id_arbitro numeric(4) PRIMARY KEY,
+nome varchar(50)
+)
+
+CREATE TABLE partidaArbitros (
+id_partida numeric(4),
+id_arbitro numeric(4),
+PRIMARY KEY(id_partida,id_arbitro)
+)
+
+
+ALTER TABLE partidaArbitros ADD CONSTRAINT fk_paarb_arb FOREIGN KEY(id_arbitro) REFERENCES arbitros (id_arbitro)
+ALTER TABLE partidaArbitros ADD CONSTRAINT fk_paarb_part FOREIGN KEY(id_partida) REFERENCES partidas (id_partida)
+ALTER TABLE partidas ADD CONSTRAINT fk_visit_fran FOREIGN KEY(id_visitante) REFERENCES franquias (id_franquia)
+ALTER TABLE partidas ADD CONSTRAINT fk_part_fran FOREIGN KEY(id_local) REFERENCES franquias (id_franquia)
+ALTER TABLE partidas ADD CONSTRAINT fk_part_est FOREIGN KEY(id_estadio) REFERENCES estadios (id_estadio)
+ALTER TABLE franquias ADD CONSTRAINT fk_fran_div FOREIGN KEY(id_divisao,id_conferencia) REFERENCES divisoes (id_divisao,id_conferencia)
+ALTER TABLE tecnicos ADD CONSTRAINT fk_tec_fun FOREIGN KEY(id_tecnico) REFERENCES funcionarios (id_funcionario)
+ALTER TABLE enderecos ADD CONSTRAINT fk_end_est FOREIGN KEY(id_estadio) REFERENCES estadios (id_estadio)
+ALTER TABLE divisoes ADD CONSTRAINT fk_div_conf FOREIGN KEY(id_conferencia) REFERENCES conferencia (id_conferencia)
+ALTER TABLE funcionarios ADD CONSTRAINT fk_fun_jog FOREIGN KEY(id_jogador) REFERENCES jogadores (id_jogador)
+ALTER TABLE funcionarios ADD CONSTRAINT fk_fun_tec FOREIGN KEY(id_tecnico) REFERENCES tecnicos (id_tecnico)
+ALTER TABLE estatisticas ADD CONSTRAINT fk_est_jog FOREIGN KEY(id_jogador) REFERENCES jogadores (id_jogador)
+ALTER TABLE estatisticas ADD CONSTRAINT fk_est_part FOREIGN KEY(id_partida) REFERENCES partidas (id_partida)
+ALTER TABLE funcionarios ADD CONSTRAINT fk_func_fran FOREIGN KEY(id_franquia) REFERENCES franquias (id_franquia)
